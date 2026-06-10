@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480" width="780" height="480" font-family="system-ui, sans-serif">
+
+  <!-- Board outline -->
+  <rect x="20" y="20" width="740" height="440" rx="18" ry="18" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- 4.3" LCD (centered, big) -->
+  <rect x="200" y="60" width="380" height="250" rx="6" fill="#0e7490"/>
+  <text x="390" y="175" text-anchor="middle" fill="white" font-size="16" font-weight="bold">4.3" LCD</text>
+  <text x="390" y="196" text-anchor="middle" fill="white" font-size="12">480 × 272 RGB TFT</text>
+  <text x="390" y="214" text-anchor="middle" fill="white" font-size="11">Capacitive Touch (FT5336)</text>
+
+  <!-- MCU chip -->
+  <rect x="300" y="340" width="140" height="80" rx="4" fill="#2563eb"/>
+  <text x="370" y="377" text-anchor="middle" fill="white" font-size="12" font-weight="bold">STM32F746NGH6</text>
+  <text x="370" y="394" text-anchor="middle" fill="white" font-size="10">Cortex-M7 @ 216 MHz</text>
+
+  <!-- Arduino headers (left side) -->
+  <rect x="30" y="80" width="60" height="200" rx="4" fill="#475569"/>
+  <text x="60" y="175" text-anchor="middle" fill="white" font-size="11" font-weight="bold" transform="rotate(-90,60,175)">Arduino Headers</text>
+
+  <!-- Arduino headers (right side) -->
+  <rect x="690" y="80" width="60" height="200" rx="4" fill="#475569"/>
+  <text x="720" y="175" text-anchor="middle" fill="white" font-size="11" font-weight="bold" transform="rotate(90,720,175)">Arduino Headers</text>
+
+  <!-- ST-LINK USB connector (top edge, left) -->
+  <rect x="120" y="22" width="80" height="30" rx="3" fill="#7c3aed"/>
+  <text x="160" y="41" text-anchor="middle" fill="white" font-size="10" font-weight="bold">ST-LINK USB</text>
+
+  <!-- User button B1 -->
+  <rect x="113" y="330" width="64" height="28" rx="14" fill="#b45309"/>
+  <text x="145" y="348" text-anchor="middle" fill="white" font-size="11" font-weight="bold">B1 (PI11)</text>
+
+  <!-- RESET button -->
+  <rect x="113" y="370" width="64" height="28" rx="14" fill="#475569"/>
+  <text x="145" y="388" text-anchor="middle" fill="white" font-size="11" font-weight="bold">RESET</text>
+
+  <!-- User LED LD1 -->
+  <circle cx="113" cy="290" r="14" fill="#16a34a"/>
+  <text x="113" y="287" text-anchor="middle" fill="white" font-size="9" font-weight="bold">LD1</text>
+  <text x="113" y="298" text-anchor="middle" fill="white" font-size="8">(PI1)</text>
+
+  <!-- microSD slot -->
+  <rect x="590" y="340" width="70" height="36" rx="4" fill="#475569"/>
+  <text x="625" y="355" text-anchor="middle" fill="white" font-size="10" font-weight="bold">microSD</text>
+  <text x="625" y="368" text-anchor="middle" fill="white" font-size="9">Slot</text>
+
+  <!-- Audio jacks -->
+  <rect x="30" y="310" width="60" height="34" rx="4" fill="#475569"/>
+  <text x="60" y="330" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Audio</text>
+  <text x="60" y="343" text-anchor="middle" fill="white" font-size="9">Jacks</text>
+
+  <!-- Ethernet RJ45 -->
+  <rect x="590" y="390" width="70" height="40" rx="4" fill="#0e7490"/>
+  <text x="625" y="408" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Ethernet</text>
+  <text x="625" y="422" text-anchor="middle" fill="white" font-size="9">RJ45</text>
+
+  <!-- USB OTG -->
+  <rect x="30" y="360" width="60" height="34" rx="4" fill="#7c3aed"/>
+  <text x="60" y="379" text-anchor="middle" fill="white" font-size="10" font-weight="bold">USB OTG</text>
+
+  <!-- Leader lines for smaller items -->
+  <!-- LD1 leader -->
+  <line x1="127" y1="290" x2="158" y2="290" stroke="#94a3b8" stroke-width="1.2"/>
+
+  <!-- Dimension callout label for board -->
+  <rect x="246" y="428" width="208" height="22" rx="4" fill="#334155"/>
+  <text x="350" y="443" text-anchor="middle" fill="white" font-size="11">STM32F746G-DISCO (top view)</text>
+
+</svg>

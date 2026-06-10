@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software stack · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Software stack</div>
+      <h1>The software stack</h1>
+
+      <p>
+        STM32 development on the F746G-DISCO board revolves around three main tools —
+        <strong>STM32CubeMX</strong>, <strong>STM32CubeIDE</strong>, and <strong>TouchGFX</strong> —
+        plus a handful of supporting pieces that sit underneath them; together they take you from
+        a blank chip configuration all the way to a running, graphical application on the board.
+      </p>
+
+      <h2>STM32CubeMX (v6.17.0)</h2>
+      <p>
+        CubeMX is a graphical configuration tool. Instead of hand-writing every hardware
+        initialisation routine, you use its point-and-click interface to decide which pins do what
+        (GPIO output, UART, SPI, …), how fast the processor clock runs, and which built-in
+        peripherals (timers, ADC, USB, …) are turned on. When you are happy with the setup you
+        click <strong>Generate Code</strong> and CubeMX writes all the C startup and initialisation
+        code for you automatically.
+      </p>
+      <p>
+        All of your choices are stored in a single project file with the extension
+        <code>.ioc</code>. Think of the <code>.ioc</code> file as the "source of truth" for your
+        hardware configuration — you re-open it in CubeMX any time you need to change a pin or
+        enable a new peripheral.
+      </p>
+
+      <h2>STM32CubeIDE (v2.1.0)</h2>
+      <p>
+        CubeIDE is the <em>integrated development environment</em> (IDE) — the program where you
+        spend most of your time. Inside CubeIDE you:
+      </p>
+      <ul>
+        <li>Write and edit your C/C++ application code.</li>
+        <li><strong>Compile</strong> (also called <em>build</em>) it into a binary that the
+            microcontroller can execute.</li>
+        <li><strong>Flash</strong> that binary onto the board — copy it into the chip's internal
+            flash memory so it survives a power cycle.</li>
+        <li><strong>Debug</strong> it step-by-step: pause execution, inspect variables, set
+            breakpoints.</li>
+      </ul>
+      <p>
+        CubeIDE ships with the CubeMX engine built in, so you can open and edit the
+        <code>.ioc</code> file and regenerate code without ever leaving the IDE.
+      </p>
+
+      <h2>TouchGFX (v4.26.1)</h2>
+      <p>
+        TouchGFX is a drag-and-drop designer for building the <em>graphical user interface</em>
+        (GUI) — the screens and interactive widgets that appear on the board's 4.3-inch LCD.
+        You arrange buttons, images, labels, and animations visually inside the TouchGFX Designer
+        application; it then generates the C++ code that drives those visuals at runtime.
+      </p>
+      <p>
+        Under the hood TouchGFX talks directly to the display hardware: the
+        <strong>LTDC</strong> (LCD-TFT Display Controller) that pushes pixels to the screen, and
+        the <strong>Chrom-ART / DMA2D</strong> accelerator that blends and copies graphics in
+        hardware so the CPU stays free for your application logic.
+      </p>
+
+      <h2>Supporting cast</h2>
+      <dl>
+        <dt><strong>HAL — Hardware Abstraction Layer</strong></dt>
+        <dd>
+          ST's ready-made C library that ships with every generated project. Instead of poking
+          hardware registers directly (which requires reading hundreds of pages of the chip's
+          reference manual), you call simple functions like
+          <code>HAL_GPIO_TogglePin()</code> or <code>HAL_UART_Transmit()</code>. HAL handles the
+          register details for you.
+        </dd>
+
+        <dt><strong>ST-LINK</strong></dt>
+        <dd>
+          A small debugger/programmer chip that is physically soldered onto the DISCO board. A
+          single USB cable between your PC and the board's <em>ST-LINK USB connector</em> gives you
+          three things at once: flashing new firmware, step-by-step debugging, and a virtual serial
+          (COM) port for <code>printf</code>-style logging.
+        </dd>
+
+        <dt><strong>The <code>.ioc</code> file</strong></dt>
+        <dd>
+          Your project's hardware configuration, saved in XML format by CubeMX. Check it into
+          version control alongside your source code — it is the recipe that lets CubeMX
+          regenerate the correct initialisation code after any configuration change.
+        </dd>
+      </dl>
+
+      <div class="note"><b>Note</b> ST has introduced a newer generation toolchain —
+        <strong>STM32CubeMX2</strong> and <strong>HAL2</strong> — with a redesigned API. As a
+        beginner, stay on the <strong>classic CubeMX 6.x + HAL v1</strong> stack. The vast majority
+        of tutorials, ST application notes, and community examples still target this generation, so
+        you will find far more help online.
+      </div>
+
+      <h2>How they fit together</h2>
+
+      <figure>
+        <img src="../assets/img/toolchain-flow.svg"
+             alt="Toolchain flow from CubeMX through CubeIDE and ST-LINK to the board, with TouchGFX feeding code generation">
+        <figcaption>From configuration to a running board.</figcaption>
+      </figure>
+
+      <p>
+        Here is the flow in plain English:
+      </p>
+      <ol>
+        <li><strong>Configure</strong> — open your <code>.ioc</code> file in CubeMX, set up pins
+            and peripherals, then click Generate Code.</li>
+        <li><strong>Generate</strong> — CubeMX writes the C startup files and HAL initialisation
+            code into your CubeIDE project folder.</li>
+        <li><strong>Code &amp; Build</strong> — write your application logic in CubeIDE, then
+            build to produce a <code>.elf</code> / <code>.bin</code> binary.</li>
+        <li><strong>Flash</strong> — CubeIDE sends the binary over USB through the on-board ST-LINK
+            programmer into the chip's flash memory.</li>
+        <li><strong>Run</strong> — the STM32F746G executes your code; reset the board and it
+            starts automatically.</li>
+      </ol>
+      <p>
+        TouchGFX feeds into step 2: its Designer generates C++ screen and widget code that lands
+        directly inside the same CubeIDE project, so the build step compiles everything together.
+      </p>
+
+      <div class="tip"><b>Tip</b> For beginners: install <strong>STM32CubeIDE</strong> (it already
+        includes CubeMX) and <strong>TouchGFX Designer</strong>, then spend most of your time
+        inside CubeIDE. You only need to open the standalone CubeMX or TouchGFX Designer apps when
+        CubeIDE's built-in versions lag behind a required feature.
+      </div>
+
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Local Claude Code tooling / preview config
+.claude/
+
+# Internal planning docs (spec + implementation plan) — not for publishing
+docs/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~

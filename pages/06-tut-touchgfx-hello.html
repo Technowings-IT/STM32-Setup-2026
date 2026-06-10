@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial 3: TouchGFX Hello World · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Tut 3: TouchGFX Hello</div>
+      <h1>Tutorial 3 &mdash; TouchGFX &ldquo;Hello, STM32!&rdquo;</h1>
+      <!-- CONTENT -->
+
+      <p><strong>Goal:</strong> Display text (and optionally an image) on the board's 4.3-inch, 480&times;272 LCD using TouchGFX 4.26.1.</p>
+
+      <h2>What you'll learn</h2>
+      <ul>
+        <li>Starting a TouchGFX project from an application template</li>
+        <li>Placing widgets on a screen in TouchGFX Designer</li>
+        <li>Generating C++ code from the Designer</li>
+        <li>Building and flashing a GUI application from STM32CubeIDE</li>
+      </ul>
+
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>STM32CubeIDE 2.1.0 installed and working</li>
+        <li>TouchGFX 4.26.1 installed (the Designer opens automatically from within CubeIDE or as a standalone tool)</li>
+        <li>Board verified and connected — see the <a href="03-install-setup.html">Install &amp; Setup</a> page if you haven't done this yet</li>
+      </ul>
+
+      <h2>Steps</h2>
+
+      <h3>Step 1 &mdash; Create a new project from the application template</h3>
+      <p>
+        Open <b>TouchGFX Designer 4.26.1</b>, then click <code>Create New</code>.
+        In the template browser, choose the <b>STM32F746G-DISCO</b> application template.
+        Name the project <code>hello_gfx</code> and click <b>Create</b>.
+      </p>
+      <div class="note"><b>Note</b> The application template auto-configures LTDC, DMA2D, the SDRAM framebuffer, and QSPI — that's why it "just works" on this board. You don't need to set up any of the graphics hardware yourself.</div>
+
+      <h3>Step 2 &mdash; Add a Text widget to the canvas</h3>
+      <p>
+        The canvas shows the board's screen at its native resolution: <b>480&times;272 pixels</b>.
+        In the widget panel on the left, find the <b>Text</b> (or <b>TextArea</b>) widget and drag it onto the canvas wherever you'd like the text to appear.
+      </p>
+
+      <h3>Step 3 &mdash; Set the text content and style</h3>
+      <p>
+        With the widget selected, look at the right-hand properties panel.
+        Set the text value to <code>Hello, STM32!</code>.
+        Adjust the font, size, and color to your liking.
+      </p>
+      <p>
+        <em>Optional:</em> drag an <b>Image</b> widget from the widget panel onto the canvas and select one of the bundled images from the asset picker.
+      </p>
+
+      <h3>Step 4 &mdash; Generate code</h3>
+      <p>
+        Click <b>Generate Code</b> in the top-right corner of the Designer.
+        TouchGFX will write all the C++ source files for your screens and widgets, plus the STM32CubeIDE project files, into the <code>hello_gfx</code> folder.
+      </p>
+      <div class="tip"><b>Tip</b> You must regenerate code every time you make changes in the Designer. Think of "Generate Code" as saving your design <em>and</em> compiling it into the project.</div>
+
+      <h3>Step 5 &mdash; Build and flash from STM32CubeIDE</h3>
+      <p>
+        Switch to STM32CubeIDE. Go to <code>File ▸ Open Projects from File System…</code>, click <b>Directory…</b>, and select the <code>hello_gfx</code> folder. Import the project.
+      </p>
+      <p>
+        Click the <b>hammer</b> icon to build. When the build finishes with no errors, click the <b>green play</b> button to flash the firmware to the board.
+      </p>
+
+      <div class="checkpoint"><b>&#x2705; Checkpoint</b> <code>Hello, STM32!</code> appears on the LCD. If you added an image widget, it should be visible too.</div>
+
+      <h2>What just happened</h2>
+      <p>
+        TouchGFX draws your screen into a <b>framebuffer</b> &mdash; a large block of memory that holds the color value of every single pixel on the display.
+        On the STM32F746G-DISCO, this framebuffer lives in the external <b>SDRAM</b> (the on-board chip provides enough RAM for a full 480&times;272 frame at 16-bit color).
+        The <b>LTDC</b> (LCD-TFT Display Controller) peripheral reads that framebuffer continuously and drives the physical LCD panel, so whatever is in memory appears on screen.
+      </p>
+      <p>
+        Whenever TouchGFX needs to redraw a widget, it uses <b>Chrom-ART (DMA2D)</b> &mdash; a hardware accelerator built into the STM32F7 &mdash; to fill and blend pixels much faster than the CPU could on its own.
+      </p>
+      <p>
+        The <b>Designer</b> is the visual editor where you arrange widgets. <b>Generate Code</b> translates your layout into C++ classes (one per screen) that call the TouchGFX rendering API at runtime. You write your application logic by overriding callbacks in those generated classes.
+      </p>
+
+      <h2>The CubeMX route (alternative)</h2>
+      <p>
+        If you prefer to start from scratch or need to combine TouchGFX with a custom peripheral configuration, you can open <b>STM32CubeMX</b>, select the STM32F746G-DISCO board, and enable the <b>TouchGFX</b> graphics middleware in the middleware section.
+        You then configure LTDC, DMA2D, FMC (for SDRAM), and QSPI manually, set the toolchain to <b>STM32CubeIDE</b>, and generate the project.
+        CubeMX will include the TouchGFX module, and from there you open the Designer to add screens and widgets.
+      </p>
+      <div class="note"><b>Note</b> Instead of a template you can start in STM32CubeMX, enable the TouchGFX graphics middleware, configure LTDC/DMA2D and the external memories yourself, set the toolchain to STM32CubeIDE, then generate from the TouchGFX module. The application template just does all of this for you.</div>
+
+      <div class="warn"><b>Watch out</b> If no TouchGFX files appear after generating, either you didn't generate from the TouchGFX module, or the toolchain wasn't set to STM32CubeIDE before generating. See <a href="08-troubleshooting.html">Troubleshooting</a>.</div>
+
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

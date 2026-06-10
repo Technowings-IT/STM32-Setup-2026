@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install &amp; setup · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Install &amp; setup</div>
+      <h1>Install &amp; setup (Windows)</h1>
+      <!-- CONTENT -->
+      <p>This page walks you through every tool you need before writing your first line of STM32 code. All downloads come from <strong>st.com</strong>, are free, and — since CubeMX 6.16 — no ST account is required.</p>
+
+      <h2>What to install</h2>
+      <ol>
+        <li><strong>STM32CubeIDE 2.1.0</strong> — the main IDE you will use for editing, building, and flashing code. The CubeMX pin-configuration engine is bundled inside CubeIDE, so you do not need a separate CubeMX download.</li>
+        <li><strong>TouchGFX 4.26.1</strong> — the graphical UI framework for the STM32F746G-DISCO display. You can either install the standalone <em>TouchGFX Designer</em> application, or add it from inside CubeMX via <em>Help → Manage embedded software packages → Application templates</em>.</li>
+      </ol>
+      <div class="note"><b>Note</b> Downloads are free and account-free since CubeMX 6.16.</div>
+
+      <h2>Install order &amp; steps</h2>
+      <ol>
+        <li>Go to <strong>st.com</strong> and download the STM32CubeIDE 2.1.0 installer for Windows.</li>
+        <li>Run the installer. Accept the license agreement and click through the setup wizard.</li>
+        <li>When Windows or the installer prompts you to install the <strong>ST-LINK USB driver</strong>, accept it. This driver lets your PC talk to the board.</li>
+        <li>Finish the CubeIDE installation.</li>
+        <li>Download and install <strong>TouchGFX Designer 4.26.1</strong> the same way — run its installer and follow the prompts.</li>
+      </ol>
+
+      <h2>First launch</h2>
+      <p>Open <strong>STM32CubeIDE</strong> from the Start menu. On first launch it asks you to choose a <em>workspace</em> folder — this is simply the folder where your projects will be stored. You can accept the suggested path or pick your own. Click <em>Launch</em>. You will land on the <strong>Information Center</strong> welcome screen.</p>
+
+      <h2>Connect the board</h2>
+      <p>Plug a USB cable from your PC into the <strong>ST-LINK USB port</strong> on the STM32F746G-DISCO board (labelled <em>USB ST-LINK</em>). A power LED on the board lights up. Windows will automatically install the ST-LINK driver (if it did not install during setup) and create a <strong>virtual COM port</strong> — a simulated serial port that lets you send debug output over USB.</p>
+      <div class="warn"><b>Watch out</b> Use a USB <em>data</em> cable, not a charge-only cable. Charge-only cables carry power but no data, so the board will appear to power on but your PC will not detect it.</div>
+
+      <h2>Verify the connection</h2>
+      <p>To confirm everything is recognised by Windows:</p>
+      <ol>
+        <li>Right-click the Start button and choose <strong>Device Manager</strong>.</li>
+        <li>Expand <strong>Ports (COM &amp; LPT)</strong>.</li>
+        <li>You should see an entry such as <em>STMicroelectronics STLink Virtual COM Port (COM3)</em>. The exact number (COM3, COM4, …) varies per machine — make a note of it, you will need it in Tutorial 2.</li>
+        <li>Optionally, if STM32CubeIDE later prompts you to upgrade the ST-LINK firmware, accept the upgrade (you can also do this at any time through <strong>STM32CubeProgrammer</strong>).</li>
+      </ol>
+
+      <div class="checkpoint"><b>&#x2705; Checkpoint</b> Tools installed, board powered, and the ST-LINK together with its virtual COM port appear in Device Manager.</div>
+
+      <div class="warn"><b>Watch out</b> If no COM port appears or you see "ST-LINK not found", see <a href="08-troubleshooting.html">Troubleshooting</a>.</div>
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

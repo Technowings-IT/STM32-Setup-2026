@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting &amp; glossary · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Troubleshooting</div>
+      <h1>Troubleshooting &amp; glossary</h1>
+      <!-- CONTENT -->
+      <p>Something not working? Find your symptom in the table below, then look up any unfamiliar terms in the glossary.</p>
+
+      <h2>Common problems</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Fix / cause</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ST-LINK not found / no COM port appears in Device Manager</td>
+            <td>Reinstall the ST-LINK USB driver from ST's website. Try a different USB port and make sure you are using a data cable, not a charge-only cable. If STM32CubeIDE prompts you to upgrade the ST-LINK firmware, accept — or use STM32CubeProgrammer to do the upgrade manually.</td>
+          </tr>
+          <tr>
+            <td>"No STM32 target found" or "Error in initializing ST-LINK"</td>
+            <td>Check that the board is powered (the LCD backlight or an LED should be on). Confirm the debug interface is set to SWD in your project's debug configuration. Make sure no other program is holding the debugger open — close STM32CubeProgrammer or any other IDE instance that may have connected first.</td>
+          </tr>
+          <tr>
+            <td>Flash or erase fails</td>
+            <td>Open STM32CubeProgrammer and run a full chip erase. Check that the BOOT0 pin/jumper is in the normal run position (not bootloader mode). If problems persist, try lowering the SWD clock speed in your IDE's debug settings.</td>
+          </tr>
+          <tr>
+            <td>TouchGFX files were not generated</td>
+            <td>You must click <strong>Generate</strong> inside the TouchGFX module or TouchGFX Designer — it does not happen automatically. Also make sure that in STM32CubeMX the <em>Toolchain / IDE</em> is set to <strong>STM32CubeIDE</strong> before you click Generate Code.</td>
+          </tr>
+          <tr>
+            <td>LCD stays completely blank after flashing a TouchGFX app</td>
+            <td>The SDRAM and LTDC clocks are most likely not configured. Use the official STM32F746G-DISCO application template as your starting point and confirm you selected the correct board template — it pre-configures the display hardware for you.</td>
+          </tr>
+          <tr>
+            <td>Serial terminal shows garbage characters</td>
+            <td>Baud rate mismatch. Set both your firmware (the <code>MX_USART1_UART_Init</code> call) and your terminal program to <strong>115200 baud, 8N1</strong> (8 data bits, no parity, 1 stop bit).</td>
+          </tr>
+          <tr>
+            <td>Code you wrote has disappeared after regenerating from CubeMX</td>
+            <td>CubeMX overwrites anything outside the protected regions. Always place your custom code <em>inside</em> the <code>/* USER CODE BEGIN … */</code> and <code>/* USER CODE END … */</code> markers — CubeMX preserves everything between them.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Glossary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MCU</td>
+            <td><strong>Microcontroller Unit.</strong> A tiny computer on a single chip — it has a processor, memory, and input/output pins all built in. The STM32F746NG is the MCU on your DISCO board.</td>
+          </tr>
+          <tr>
+            <td>HAL</td>
+            <td><strong>Hardware Abstraction Layer.</strong> A library provided by ST that wraps the low-level register details into easy-to-call C functions like <code>HAL_GPIO_WritePin()</code>. It lets you drive hardware without reading every register datasheet first.</td>
+          </tr>
+          <tr>
+            <td>GPIO</td>
+            <td><strong>General-Purpose Input/Output.</strong> A pin on the MCU that you can freely control in software — set it HIGH or LOW (output) or read whether something is connected to it (input). Used for LEDs, buttons, sensors, etc.</td>
+          </tr>
+          <tr>
+            <td>UART</td>
+            <td><strong>Universal Asynchronous Receiver/Transmitter.</strong> A simple serial communication protocol that sends data one bit at a time over two wires (TX and RX). Commonly used to print debug messages to a PC terminal.</td>
+          </tr>
+          <tr>
+            <td>Baud</td>
+            <td>The number of signal changes per second on a serial line — in practice, roughly equal to bits per second. Both ends of a UART link must agree on the same baud rate (e.g., 115200) or the data looks like garbage.</td>
+          </tr>
+          <tr>
+            <td>Flash vs RAM</td>
+            <td><strong>Flash</strong> is non-volatile storage — it keeps your program code even when power is off (like a hard drive). <strong>RAM</strong> is fast but volatile — it holds variables while running, but is wiped on reset. The STM32F746NG has 1 MB Flash and 340 KB RAM on-chip.</td>
+          </tr>
+          <tr>
+            <td>Framebuffer</td>
+            <td>A region of RAM that holds the pixel colour data for the entire screen. The display controller reads this memory continuously to refresh what you see on the LCD.</td>
+          </tr>
+          <tr>
+            <td>LTDC</td>
+            <td><strong>LCD-TFT Display Controller.</strong> The hardware block inside the STM32F7 that reads the framebuffer and drives the physical LCD panel with the correct timing signals. You configure it once (usually via CubeMX) and it runs automatically.</td>
+          </tr>
+          <tr>
+            <td>DMA2D / Chrom-ART</td>
+            <td>A dedicated hardware accelerator for 2-D graphics operations — copying rectangles, filling colours, and blending layers — without using the main CPU. TouchGFX uses it automatically to keep animations smooth. ST markets it under the name <em>Chrom-ART Accelerator</em>.</td>
+          </tr>
+          <tr>
+            <td>IDE</td>
+            <td><strong>Integrated Development Environment.</strong> A program that combines a code editor, compiler, and debugger in one window. For STM32 development you use <strong>STM32CubeIDE</strong>.</td>
+          </tr>
+          <tr>
+            <td>Toolchain</td>
+            <td>The set of programs that turn your C source code into a binary the MCU can run — mainly the compiler (GCC for ARM), linker, and related utilities. STM32CubeIDE bundles a toolchain for you.</td>
+          </tr>
+          <tr>
+            <td>.ioc file</td>
+            <td>The project configuration file created and read by STM32CubeMX. It stores all your pin assignments, clock settings, and middleware choices. Opening it lets you change the hardware configuration and regenerate the C initialisation code.</td>
+          </tr>
+          <tr>
+            <td>MVP</td>
+            <td><strong>Model-View-Presenter.</strong> The software design pattern used by TouchGFX. The <em>Model</em> holds application data, the <em>View</em> describes the screen layout, and the <em>Presenter</em> connects them. Keeping these three parts separate makes UI code easier to maintain.</td>
+          </tr>
+          <tr>
+            <td>ST-LINK</td>
+            <td>The small debug chip built onto the DISCO board (or a separate USB dongle). It bridges your PC to the MCU's debug interface over USB, letting you flash new firmware and step through code line by line in the debugger.</td>
+          </tr>
+          <tr>
+            <td>VCP</td>
+            <td><strong>Virtual COM Port.</strong> The ST-LINK also exposes a serial (UART) connection to your PC as a fake COM port — no extra USB-to-serial adapter needed. You can use it with any terminal program (PuTTY, Tera Term, etc.) to receive debug output from your firmware.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

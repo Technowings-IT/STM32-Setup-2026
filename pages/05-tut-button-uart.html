@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial 2: Button + UART · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Tut 2: Button + UART</div>
+      <h1>Tutorial 2 — Button input &amp; UART printf</h1>
+      <!-- CONTENT -->
+      <p>Goal: read the user button and print a message to your PC over the ST-LINK serial port.</p>
+
+      <h2>What you'll learn</h2>
+      <ul>
+        <li>Reading a GPIO input</li>
+        <li>Enabling a UART</li>
+        <li>Redirecting <code>printf</code> to the UART</li>
+        <li>Viewing serial output on the PC</li>
+      </ul>
+
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>Finished Tutorial 1</li>
+        <li>You know your ST-LINK COM port number from Install &amp; setup</li>
+      </ul>
+
+      <h2>Steps</h2>
+
+      <h3>Step 1 — Create the project</h3>
+      <p>Create a new project named <code>button_uart</code> from the board selector (same as Tutorial 1), or extend your blink project.</p>
+
+      <h3>Step 2 — Button pin</h3>
+      <p>In the <code>.ioc</code> file, set pin <code>PI11</code> to <code>GPIO_Input</code>.</p>
+      <div class="note"><b>Note</b> On this board B1 reads <b>high when pressed</b> (it has an external pull-down resistor).</div>
+
+      <h3>Step 3 — Enable the UART</h3>
+      <p>In the <code>.ioc</code> file, enable <code>USART1</code> and set Mode to <code>Asynchronous</code>. Confirm the pins are <code>PA9</code> (TX) and <code>PB7</code> (RX) — these route to the ST-LINK virtual COM port. Set speed to <code>115200</code> baud, 8 data bits, no parity, 1 stop bit (8N1).</p>
+
+      <h3>Step 4 — Generate code</h3>
+      <p>Press <kbd>Ctrl+S</kbd> and click Yes to generate code. A handle named <code>huart1</code> now exists in the generated files.</p>
+
+      <h3>Step 5 — Redirect printf to the UART</h3>
+      <p>Open <code>Core/Src/main.c</code>. Add the <code>stdio.h</code> include inside the includes user-region:</p>
+<pre><code>/* USER CODE BEGIN Includes */
+#include &lt;stdio.h&gt;
+/* USER CODE END Includes */</code></pre>
+
+      <p>Then add the <code>__io_putchar</code> function inside the functions user-region (Section 4):</p>
+<pre><code>/* USER CODE BEGIN 4 */
+int __io_putchar(int ch)
+{
+  HAL_UART_Transmit(&amp;huart1, (uint8_t *)&amp;ch, 1, HAL_MAX_DELAY);
+  return ch;
+}
+/* USER CODE END 4 */</code></pre>
+
+      <div class="tip"><b>Tip</b> Always place your code inside the <code>USER CODE BEGIN</code> / <code>USER CODE END</code> comment blocks. Code outside these regions is deleted when you regenerate from the <code>.ioc</code>.</div>
+
+      <h3>Step 6 — Print on press</h3>
+      <p>In <code>main.c</code>, find the main loop and add the button-reading logic:</p>
+<pre><code>/* USER CODE BEGIN WHILE */
+while (1)
+{
+  if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_11) == GPIO_PIN_SET)
+  {
+    printf("Button pressed!\r\n");
+    HAL_Delay(250);   /* simple debounce */
+  }
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
+}
+/* USER CODE END 3 */</code></pre>
+
+      <div class="note"><b>Note</b> <code>HAL_Delay(250)</code> waits 250 ms after each press. This prevents one physical press from flooding the terminal with dozens of messages (debouncing).</div>
+
+      <h3>Step 7 — Build and flash</h3>
+      <p>Click the hammer icon to build. Fix any errors, then click the green Run (play) button to flash the board.</p>
+
+      <h3>Step 8 — Open a serial terminal on the PC</h3>
+      <p>Use <strong>Tera Term</strong> or <strong>PuTTY</strong>:</p>
+      <ul>
+        <li>Choose <em>Serial</em> connection type</li>
+        <li>Pick your ST-LINK COM port (the one identified during Install &amp; setup)</li>
+        <li>Set speed to <code>115200</code>, data bits <code>8</code>, parity <code>None</code>, stop bits <code>1</code></li>
+        <li>Click Connect / Open</li>
+      </ul>
+
+      <div class="checkpoint"><b>✅ Checkpoint</b> Each press of B1 prints <code>Button pressed!</code> in the terminal.</div>
+
+      <h2>What just happened</h2>
+      <ul>
+        <li><strong>GPIO input</strong> reads a pin's voltage as high or low. <code>HAL_GPIO_ReadPin</code> returns <code>GPIO_PIN_SET</code> (1) when the voltage is high and <code>GPIO_PIN_RESET</code> (0) when it is low.</li>
+        <li><strong>UART</strong> sends bytes one after another over a single wire. The ST-LINK chip on the board converts this to USB so your PC sees it as a COM port.</li>
+        <li><strong>Baud rate</strong> is bits per second and must match on both ends — if the sender says 115200 and the receiver expects something different, you see garbage.</li>
+        <li><strong><code>__io_putchar</code></strong> is the low-level hook the C standard library's <code>printf</code> calls for every character it outputs. By redirecting it to <code>HAL_UART_Transmit</code>, every <code>printf</code> call automatically goes out over USART1 to your terminal.</li>
+      </ul>
+
+      <div class="warn"><b>Watch out</b> If you see garbage characters, the baud rates don't match — set both ends to 115200. Always end lines with <code>\r\n</code>.</div>
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

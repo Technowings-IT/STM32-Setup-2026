@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorial 4: Interactive UI · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Tut 4: Interactive UI</div>
+      <h1>Tutorial 4 — Interactive UI (touch &amp; live data)</h1>
+      <!-- CONTENT -->
+
+      <p><strong>Goal:</strong> touch a widget and change what's on the screen, live.</p>
+
+      <h2>What you'll learn</h2>
+      <ul>
+        <li>How to add interactive widgets (Slider, Text) in the TouchGFX Designer.</li>
+        <li>How to wire an <strong>Interaction</strong> so that a user action calls your C++ code.</li>
+        <li>How to edit the generated C++ View to update a widget at runtime.</li>
+        <li>How the <strong>Model-View-Presenter (MVP)</strong> pattern organises a TouchGFX app.</li>
+      </ul>
+
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>You have completed Tutorial 3 — you can create, build, and flash a TouchGFX application to the STM32F746G-DISCO board.</li>
+        <li>STM32CubeIDE and TouchGFX Designer 4.26.1 are installed and working.</li>
+      </ul>
+
+      <h2>Steps</h2>
+
+      <h3>Step 1 — Add a Slider and a Text widget</h3>
+      <p>
+        Open your <code>hello_gfx</code> project (or create a new one from the <em>application-template</em>) in
+        TouchGFX Designer. In the <strong>Widgets</strong> panel on the left, find <strong>Slider</strong> and drag it
+        onto the screen canvas. Then drag a <strong>Text</strong> widget onto the canvas as well.
+      </p>
+      <p>
+        Select the Text widget and, in its properties, give it a name — for example <code>valueTxt</code>. Make sure
+        you enable a <strong>wildcard / buffer</strong> so the widget can display a changing number at runtime
+        (set the buffer size to at least <code>6</code> characters to hold any slider value).
+      </p>
+      <div class="tip"><b>Tip</b> Keep widget names short and camelCase — TouchGFX uses the name directly as a C++ variable name, so spaces or special characters will break the generated code.</div>
+
+      <h3>Step 2 — Wire an Interaction</h3>
+      <p>
+        Switch to the <strong>Interactions</strong> tab (top of the Designer). Click <strong>Add Interaction</strong>.
+        Set:
+      </p>
+      <ul>
+        <li><strong>Trigger:</strong> <em>Slider value changed</em> (choose your Slider from the drop-down).</li>
+        <li><strong>Action:</strong> <em>Call new virtual function</em> — name it <code>handleSliderValueChanged</code>.</li>
+      </ul>
+      <p>
+        A button works the same way: use the trigger <em>Button is clicked</em> and any action name you like.
+        TouchGFX will generate an empty virtual function stub that you fill in.
+      </p>
+      <div class="note"><b>Note</b> The interaction name you choose (<code>handleSliderValueChanged</code>) becomes the exact C++ method name that TouchGFX generates. Write it down — you will need it in Step 4.</div>
+
+      <h3>Step 3 — Generate code and open in STM32CubeIDE</h3>
+      <p>
+        Click the <strong>Generate Code</strong> button (top-right of the Designer). TouchGFX writes (or updates) the
+        skeleton C++ files under <code>TouchGFX/gui/</code>. When generation finishes, open or switch to
+        <strong>STM32CubeIDE</strong> and let it refresh the project — the new files appear automatically.
+      </p>
+      <div class="tip"><b>Tip</b> Never hand-edit files inside <code>TouchGFX/generated/</code> — those are overwritten every time you generate. Your code goes in the non-generated counterparts (e.g. <code>gui/src/screen1_screen/Screen1View.cpp</code>).</div>
+
+      <h3>Step 4 — Fill in the View function</h3>
+      <p>
+        In STM32CubeIDE, open
+        <code>TouchGFX/gui/src/screen1_screen/Screen1View.cpp</code>.
+        TouchGFX has already written an empty stub for <code>handleSliderValueChanged</code>. Replace the empty body
+        with the two lines below:
+      </p>
+<pre><code>// Screen1View.cpp  — TouchGFX generates the empty stub; you fill the body
+void Screen1View::handleSliderValueChanged(int value)
+{
+    Unicode::snprintf(valueTxtBuffer, VALUETXT_SIZE, "%d", value);
+    valueTxt.invalidate();   // ask TouchGFX to repaint just this widget
+}</code></pre>
+      <div class="note"><b>Note</b> The function name must match the name you gave the interaction; TouchGFX declares it for you in <code>Screen1View.hpp</code>. The <code>valueTxtBuffer</code>/<code>VALUETXT_SIZE</code> names come from the Text widget you named <code>valueTxt</code>.</div>
+
+      <h3>Step 5 — Build and flash</h3>
+      <p>
+        In STM32CubeIDE, click <strong>Build</strong> (hammer icon) and wait for a clean build. Then click
+        <strong>Run</strong> (or <strong>Debug</strong>) to flash the board over USB. The board will reset and your
+        new screen will appear.
+      </p>
+
+      <div class="checkpoint"><b>&#x2705; Checkpoint</b> Dragging the slider updates the on-screen number in real time.</div>
+
+      <h2>What just happened</h2>
+
+      <figure>
+        <img src="../assets/img/touchgfx-mvp.svg" alt="Model-View-Presenter: Model holds data, Presenter is the glue, View holds widgets">
+        <figcaption>TouchGFX Model-View-Presenter.</figcaption>
+      </figure>
+
+      <p>
+        TouchGFX organises every application around the <strong>Model-View-Presenter (MVP)</strong> pattern:
+      </p>
+      <ul>
+        <li>
+          <strong>View</strong> — owns the widgets and is responsible for drawing. When you call
+          <code>valueTxt.invalidate()</code> you are telling the TouchGFX rendering engine
+          "this widget's pixels are stale — redraw it on the next frame." Nothing is drawn
+          immediately; the engine batches all dirty regions and repaints them efficiently.
+        </li>
+        <li>
+          <strong>Presenter</strong> — the glue layer between the View and the Model. It has no
+          widgets of its own. In larger apps you move logic here (e.g. "when the slider
+          reaches 100, start the motor") so your View stays simple. The Presenter also has
+          a <code>tickEvent()</code> method called once per frame — useful for animations or
+          polling a sensor value and pushing it to the View.
+        </li>
+        <li>
+          <strong>Model</strong> — holds data and talks to the rest of your firmware (RTOS tasks,
+          HAL drivers, communication stacks). The Presenter reads from the Model and updates
+          the View; the View never talks to the Model directly.
+        </li>
+      </ul>
+
+      <div class="note"><b>Note</b> <code>tickEvent()</code> runs once per display frame (typically 60 Hz on the STM32F746G-DISCO). Use it in the Presenter to poll a value from the Model and call a View method to refresh the relevant widget — this is the standard pattern for showing live sensor data.</div>
+
+      <div class="tip"><b>Tip</b> Keep the Presenter and Model lightweight. Heavy computation (long loops, blocking I/O) belongs in a separate RTOS task; the Model is just a thin bridge that the Presenter reads from each tick.</div>
+
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>

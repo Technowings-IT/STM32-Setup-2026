@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STM32F746G-DISCO · Getting Started</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-base="">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <h1>STM32F746G-DISCO — Getting Started</h1>
+      <p>This is a hands-on, fully offline guide that takes someone new to embedded systems from zero to four working projects on the STM32F746G-DISCO board. Every page works by double-clicking this file — no internet connection needed.</p>
+
+      <h2>The software stack</h2>
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>Version</th><th>What it's for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>STM32CubeIDE</td><td>2.1.0</td><td>Where you write, build, flash, and debug your code (bundles the CubeMX engine)</td></tr>
+          <tr><td>STM32CubeMX</td><td>6.17.0</td><td>Visually configure the chip (pins, clocks, peripherals) and generate C code</td></tr>
+          <tr><td>TouchGFX</td><td>4.26.1</td><td>Drag-and-drop designer that generates the C++ for on-screen graphics</td></tr>
+          <tr><td>HAL</td><td>HAL1 (classic)</td><td>ST's ready-made C functions the generated code calls</td></tr>
+        </tbody>
+      </table>
+      <div class="note"><b>Note</b> A newer CubeMX2 / HAL2 line exists, but it is less mature — beginners should stay on classic CubeMX 6.x + HAL1, which this guide uses.</div>
+
+      <h2>What's inside</h2>
+      <div class="cards">
+        <a class="card" href="pages/01-software-stack.html">
+          <span class="num">01</span>
+          <div class="ct">Software Stack</div>
+          <div class="cd">What CubeMX, CubeIDE and TouchGFX each do, and how they fit together.</div>
+        </a>
+        <a class="card" href="pages/02-board-overview.html">
+          <span class="num">02</span>
+          <div class="ct">Board Overview</div>
+          <div class="cd">A tour of the STM32F746G-DISCO: CPU, memory, the LCD, and key parts.</div>
+        </a>
+        <a class="card" href="pages/03-install-setup.html">
+          <span class="num">03</span>
+          <div class="ct">Install &amp; Setup</div>
+          <div class="cd">Install the tools on Windows, connect the board, and verify it's seen.</div>
+        </a>
+        <a class="card" href="pages/04-tut-blink.html">
+          <span class="num">04</span>
+          <div class="ct">Tut 1: Blink LED</div>
+          <div class="cd">Your first project: prove the toolchain by blinking the on-board LED.</div>
+        </a>
+        <a class="card" href="pages/05-tut-button-uart.html">
+          <span class="num">05</span>
+          <div class="ct">Tut 2: Button + UART</div>
+          <div class="cd">Read the user button and print messages to your PC over serial.</div>
+        </a>
+        <a class="card" href="pages/06-tut-touchgfx-hello.html">
+          <span class="num">06</span>
+          <div class="ct">Tut 3: TouchGFX Hello World</div>
+          <div class="cd">Show text and an image on the 4.3-inch LCD.</div>
+        </a>
+        <a class="card" href="pages/07-tut-touchgfx-interactive.html">
+          <span class="num">07</span>
+          <div class="ct">Tut 4: Interactive UI</div>
+          <div class="cd">Touch a button/slider and update the screen live.</div>
+        </a>
+        <a class="card" href="pages/08-troubleshooting.html">
+          <span class="num">08</span>
+          <div class="ct">Troubleshooting &amp; Glossary</div>
+          <div class="cd">Fixes for the most common errors, plus a beginner glossary.</div>
+        </a>
+      </div>
+
+      <h2>Recommended path</h2>
+      <ol>
+        <li>Read pages <strong>01 (Software Stack)</strong>, <strong>02 (Board Overview)</strong>, and <strong>03 (Install &amp; Setup)</strong> first to get your tools installed and understand the hardware.</li>
+        <li>Then work through the tutorials in order: <strong>04 Blink LED</strong> → <strong>05 Button + UART</strong> → <strong>06 TouchGFX Hello World</strong> → <strong>07 Interactive UI</strong>. Each tutorial builds on the one before it, so don't skip ahead.</li>
+        <li>Keep <strong>08 Troubleshooting &amp; Glossary</strong> open in a tab as a reference whenever you hit an error or an unfamiliar term.</li>
+      </ol>
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="assets/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board overview · STM32F746G Getting Started</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-base="../">
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main>
+    <div class="topbar"><button id="theme-toggle" type="button">Light</button></div>
+    <div class="content">
+      <div class="breadcrumb"><a href="../index.html">Home</a> › Board overview</div>
+      <h1>STM32F746G-DISCO board overview</h1>
+
+      <!-- CONTENT -->
+      <p>
+        A <strong>Discovery kit</strong> is a ready-to-run development board from ST that combines
+        a microcontroller, a set of useful peripherals, and an onboard debugger on a single PCB.
+        You do not need any extra hardware: plug a USB cable into the ST-LINK connector, install
+        the tools, and you can immediately flash and debug your code. The STM32F746G-DISCO adds a
+        4.3-inch touchscreen, external RAM, and external flash, making it a great starting point
+        for learning both bare-metal embedded programming and graphical UI development.
+      </p>
+
+      <h2>At a glance</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MCU</td>
+            <td>STM32F746NGH6 — Arm Cortex-M7 @ 216 MHz</td>
+          </tr>
+          <tr>
+            <td>Flash</td>
+            <td>1 MB (internal)</td>
+          </tr>
+          <tr>
+            <td>RAM</td>
+            <td>340 KB (256 KB system SRAM + 64 KB DTCM + 16 KB ITCM + 4 KB backup)</td>
+          </tr>
+          <tr>
+            <td>Display</td>
+            <td>4.3&#8243; 480&#215;272 RGB TFT-LCD with capacitive touch</td>
+          </tr>
+          <tr>
+            <td>Quad-SPI Flash</td>
+            <td>16 MB (128-Mbit) external NOR Flash</td>
+          </tr>
+          <tr>
+            <td>SDRAM</td>
+            <td>128-Mbit external SDRAM</td>
+          </tr>
+          <tr>
+            <td>Debugger</td>
+            <td>Onboard ST-LINK/V2-1 (debug + mass storage + virtual COM port)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Board layout</h2>
+      <figure>
+        <img src="../assets/img/board-map.svg" alt="Top-down map of the STM32F746G-DISCO board">
+        <figcaption>Major parts of the board.</figcaption>
+      </figure>
+
+      <h2>Memory</h2>
+      <figure>
+        <img src="../assets/img/memory-map.svg" alt="Memory sizes: internal flash and RAM plus external QSPI and SDRAM">
+        <figcaption>Internal vs external memory.</figcaption>
+      </figure>
+
+      <p>
+        The Cortex-M7's internal RAM (340 KB total) sounds generous until you consider the
+        display. A single full-screen framebuffer at 480&#215;272 pixels in 16-bit colour
+        takes about 261 KB — almost all of the internal RAM on its own. That is why the board
+        includes <strong>128-Mbit of external SDRAM</strong>: the LCD framebuffer (the
+        in-memory image of the screen that the display controller reads out continuously) lives
+        there, leaving the fast internal SRAM free for your application data and stacks.
+        The <strong>16 MB Quad-SPI NOR Flash</strong> sits alongside it, typically used to
+        store larger GUI assets such as fonts, icons, and background images that cannot fit in
+        the 1 MB internal flash.
+      </p>
+
+      <h2>Display &amp; graphics</h2>
+      <p>
+        The STM32F746 drives the LCD panel through its built-in <strong>LTDC</strong> (LCD-TFT
+        Display Controller), which continuously streams pixel data from the framebuffer in SDRAM
+        directly to the panel — your CPU does not have to do anything once the frame is ready.
+        For fast 2D drawing operations (fills, blits, alpha blending), the
+        <strong>Chrom-ART accelerator (DMA2D)</strong> offloads the work from the CPU entirely.
+        Touch input is handled by the <strong>FT5336</strong> capacitive touch controller, which
+        communicates with the MCU over <strong>I&#178;C</strong> and reports up to five
+        simultaneous touch points. This combination of LTDC + Chrom-ART + capacitive touch is
+        precisely what makes the board an ideal target for <strong>TouchGFX</strong> and similar
+        embedded GUI frameworks.
+      </p>
+
+      <h2>Parts used in these tutorials</h2>
+      <p>
+        The examples in this guide focus on a small, well-defined subset of the board's hardware:
+      </p>
+      <ul>
+        <li>User LED <code>LD1</code> connected to GPIO pin <code>PI1</code></li>
+        <li>User button <code>B1</code> connected to GPIO pin <code>PI11</code></li>
+        <li>The ST-LINK <strong>virtual COM port</strong> (VCP) for sending serial debug output
+            to your PC without any extra hardware</li>
+      </ul>
+
+      <div class="note"><b>Note</b> The board also has audio output, a 10/100 Ethernet port,
+      USB OTG, and a microSD card slot, but those are out of scope for this beginner guide.
+      Once you are comfortable with the basics, the ST BSP (Board Support Package) drivers
+      make those peripherals straightforward to add.</div>
+
+      <div class="checkpoint">&#10003; Checkpoint — you can now identify the MCU, the memory
+      regions, and the key pins (<code>PI1</code>, <code>PI11</code>) you will use in the next
+      sections. Move on when you feel comfortable reading the "At a glance" table without
+      referring back.</div>
+
+    </div>
+    <div class="page-nav" id="page-nav"></div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+</body>
+</html>
