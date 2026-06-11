@@ -16,14 +16,7 @@
       <h1>STM32F746G-DISCO board overview</h1>
 
       <!-- CONTENT -->
-      <p>
-        A <strong>Discovery kit</strong> is a ready-to-run development board from ST that combines
-        a microcontroller, a set of useful peripherals, and an onboard debugger on a single PCB.
-        You do not need any extra hardware: plug a USB cable into the ST-LINK connector, install
-        the tools, and you can immediately flash and debug your code. The STM32F746G-DISCO adds a
-        4.3-inch touchscreen, external RAM, and external flash, making it a great starting point
-        for learning both bare-metal embedded programming and graphical UI development.
-      </p>
+      <p>A <strong>Discovery kit</strong> is a ready-to-run ST board: an MCU, useful peripherals, and an onboard ST-LINK debugger on one PCB — plug in one USB cable and you can flash and debug. The STM32F746G-DISCO adds a 4.3-inch touchscreen, external SDRAM, and external flash, making it a strong board for learning embedded GUIs.</p>
 
       <h2>At a glance</h2>
       <table>
@@ -77,17 +70,7 @@
         <figcaption>Internal vs external memory.</figcaption>
       </figure>
 
-      <p>
-        The Cortex-M7's internal RAM (340 KB total) sounds generous until you consider the
-        display. A single full-screen framebuffer at 480&#215;272 pixels in 16-bit colour
-        takes about 261 KB — almost all of the internal RAM on its own. That is why the board
-        includes <strong>128-Mbit of external SDRAM</strong>: the LCD framebuffer (the
-        in-memory image of the screen that the display controller reads out continuously) lives
-        there, leaving the fast internal SRAM free for your application data and stacks.
-        The <strong>16 MB Quad-SPI NOR Flash</strong> sits alongside it, typically used to
-        store larger GUI assets such as fonts, icons, and background images that cannot fit in
-        the 1 MB internal flash.
-      </p>
+      <p>The 340 KB of internal RAM sounds generous until the display: one full 480×272 frame at 16-bit colour is ~261 KB — nearly all of it. So the board adds <strong>16 MB external SDRAM</strong> to hold the LCD framebuffer, leaving fast internal SRAM for your code. The <strong>16 MB Quad-SPI flash</strong> stores larger GUI assets (fonts, images) that won't fit in the 1 MB internal flash.</p>
 
       <h2>Display &amp; graphics</h2>
       <p>
