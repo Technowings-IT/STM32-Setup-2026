@@ -1,15 +1,28 @@
 (function(){
-  var PAGES = [
-    {href:"index.html",                            title:"Home",                         label:"Home"},
-    {href:"pages/01-software-stack.html",          title:"1 · Software Stack",       label:"Software Stack"},
-    {href:"pages/02-board-overview.html",          title:"2 · Board Overview",       label:"Board Overview"},
-    {href:"pages/03-install-setup.html",           title:"3 · Install & Setup",      label:"Install & Setup"},
-    {href:"pages/04-tut-blink.html",               title:"4 · Tut 1: Blink LED",     label:"Tut 1: Blink LED"},
-    {href:"pages/05-tut-button-uart.html",         title:"5 · Tut 2: Button + UART", label:"Tut 2: Button + UART"},
-    {href:"pages/06-tut-touchgfx-hello.html",      title:"6 · Tut 3: TouchGFX Hello",label:"Tut 3: TouchGFX Hello"},
-    {href:"pages/07-tut-touchgfx-interactive.html",title:"7 · Tut 4: Interactive UI",label:"Tut 4: Interactive UI"},
-    {href:"pages/08-troubleshooting.html",         title:"8 · Troubleshooting",      label:"Troubleshooting & Glossary"}
+  var GROUPS = [
+    { title:"Introduction", items:[
+      {href:"index.html",                       nav:"Overview",                       label:"Overview"},
+      {href:"pages/01-software-stack.html",      nav:"Software stack",                 label:"Software stack"},
+      {href:"pages/02-board-overview.html",      nav:"Board overview",                 label:"Board overview"}
+    ]},
+    { title:"Setup", items:[
+      {href:"pages/03-install-setup.html",       nav:"Install & verify",               label:"Install & verify"}
+    ]},
+    { title:"Workflow", items:[
+      {href:"pages/04-workflow.html",            nav:"TouchGFX-first flow & structure",label:"Workflow & project structure"}
+    ]},
+    { title:"Demos", items:[
+      {href:"pages/05-demo1-first-screen.html",  nav:"D1 · First screen",              label:"D1 · First screen"},
+      {href:"pages/06-demo2-interactive.html",   nav:"D2 · Interactive UI",            label:"D2 · Interactive UI"},
+      {href:"pages/07-demo3-hardware.html",      nav:"D3 · Screen ↔ hardware",         label:"D3 · Screen ↔ hardware"}
+    ]},
+    { title:"Reference", items:[
+      {href:"pages/08-troubleshooting.html",     nav:"Troubleshooting & glossary",     label:"Troubleshooting & glossary"}
+    ]}
   ];
+  var PAGES = [];
+  GROUPS.forEach(function(g){ g.items.forEach(function(it){ PAGES.push(it); }); });
+
   var base = document.body.getAttribute("data-base") || "";
   function url(h){ return base + h; }
   var here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
@@ -18,9 +31,16 @@
 
   var side = document.getElementById("sidebar");
   if (side){
-    var h = '<div class="brand"><a href="'+url("index.html")+'">STM32F746 · Get Started</a></div><nav>';
-    PAGES.forEach(function(p,i){ h += '<a href="'+url(p.href)+'"'+(i===idx?' class="active"':'')+'>'+p.title+'</a>'; });
-    side.innerHTML = h + '</nav>';
+    var h = '<div class="brand"><a href="'+url("index.html")+'">STM32F746 · Onboarding</a></div>';
+    GROUPS.forEach(function(g){
+      h += '<div class="nav-group"><div class="nav-group-title">'+g.title+'</div><nav>';
+      g.items.forEach(function(it){
+        var active = (it.href.split("/").pop().toLowerCase() === here);
+        h += '<a href="'+url(it.href)+'"'+(active?' class="active"':'')+'>'+it.nav+'</a>';
+      });
+      h += '</nav></div>';
+    });
+    side.innerHTML = h;
   }
 
   var foot = document.getElementById("page-nav");
