@@ -18,26 +18,26 @@
       <p>This page walks you through every tool you need before writing your first line of STM32 code. All downloads come from <strong>st.com</strong>, are free, and — since CubeMX 6.16 — no ST account is required.</p>
 
       <h2>What to install</h2>
+      <p>All three are free downloads from <strong>st.com</strong>, and no ST account is required (account-free since CubeMX 6.16). Since CubeIDE 2.0 they are <strong>separate</strong> apps — install all three:</p>
       <ol>
-        <li><strong>STM32CubeIDE 2.1.0</strong> — the main IDE you will use for editing, building, and flashing code. The CubeMX pin-configuration engine is bundled inside CubeIDE, so you do not need a separate CubeMX download.</li>
-        <li><strong>TouchGFX 4.26.1</strong> — the graphical UI framework for the STM32F746G-DISCO display. You can either install the standalone <em>TouchGFX Designer</em> application, or add it from inside CubeMX via <em>Help → Manage embedded software packages → Application templates</em>.</li>
+        <li><strong>STM32CubeIDE 2.1.0</strong> — editor, compiler, flasher, debugger. Accept the <strong>ST-LINK USB driver</strong> prompt during install.</li>
+        <li><strong>STM32CubeMX 6.17.0</strong> — standalone pin/clock/peripheral configurator. <em>Required separately</em> — it is no longer inside CubeIDE.</li>
+        <li><strong>TouchGFX Designer 4.26.1</strong> — the UI designer and project scaffolder you start from for this board.</li>
       </ol>
-      <div class="note"><b>Note</b> Downloads are free and account-free since CubeMX 6.16.</div>
+      <div class="note"><b>Note</b> If you used older STM32 tutorials that say "CubeIDE includes CubeMX", that changed in CubeIDE 2.0 — you now install CubeMX yourself.</div>
 
       <h2>Install order &amp; steps</h2>
       <ol>
-        <li>Go to <strong>st.com</strong> and download the STM32CubeIDE 2.1.0 installer for Windows.</li>
-        <li>Run the installer. Accept the license agreement and click through the setup wizard.</li>
-        <li>When Windows or the installer prompts you to install the <strong>ST-LINK USB driver</strong>, accept it. This driver lets your PC talk to the board.</li>
-        <li>Finish the CubeIDE installation.</li>
-        <li>Download and install <strong>TouchGFX Designer 4.26.1</strong> the same way — run its installer and follow the prompts.</li>
+        <li>From <strong>st.com</strong>, download and run the <strong>STM32CubeIDE 2.1.0</strong> Windows installer. Accept the license and the <strong>ST-LINK USB driver</strong> when prompted.</li>
+        <li>Download and run <strong>STM32CubeMX 6.17.0</strong> (standalone). Follow the prompts.</li>
+        <li>Download and run <strong>TouchGFX Designer 4.26.1</strong>. Follow the prompts.</li>
       </ol>
 
       <h2>First launch</h2>
       <p>Open <strong>STM32CubeIDE</strong> from the Start menu. On first launch it asks you to choose a <em>workspace</em> folder — this is simply the folder where your projects will be stored. You can accept the suggested path or pick your own. Click <em>Launch</em>. You will land on the <strong>Information Center</strong> welcome screen.</p>
 
       <h2>Connect the board</h2>
-      <p>Plug a USB cable from your PC into the <strong>ST-LINK USB port</strong> on the STM32F746G-DISCO board (labelled <em>USB ST-LINK</em>). A power LED on the board lights up. Windows will automatically install the ST-LINK driver (if it did not install during setup) and create a <strong>virtual COM port</strong> — a simulated serial port that lets you send debug output over USB.</p>
+      <p>Plug a USB <em>data</em> cable from your PC into the <strong>ST-LINK USB connector (CN14)</strong> on the board. A power LED lights up, Windows installs the ST-LINK driver if needed, and a <strong>virtual COM port</strong> appears.</p>
       <div class="warn"><b>Watch out</b> Use a USB <em>data</em> cable, not a charge-only cable. Charge-only cables carry power but no data, so the board will appear to power on but your PC will not detect it.</div>
 
       <h2>Verify the connection</h2>
@@ -45,7 +45,7 @@
       <ol>
         <li>Right-click the Start button and choose <strong>Device Manager</strong>.</li>
         <li>Expand <strong>Ports (COM &amp; LPT)</strong>.</li>
-        <li>You should see an entry such as <em>STMicroelectronics STLink Virtual COM Port (COM3)</em>. The exact number (COM3, COM4, …) varies per machine — make a note of it, you will need it in Tutorial 2.</li>
+        <li>You should see an entry such as <em>STMicroelectronics STLink Virtual COM Port (COM3)</em>. The exact number (COM3, COM4, …) varies per machine — make a note of it, you will need it in Demo 3 (UART).</li>
         <li>Optionally, if STM32CubeIDE later prompts you to upgrade the ST-LINK firmware, accept the upgrade (you can also do this at any time through <strong>STM32CubeProgrammer</strong>).</li>
       </ol>
 
