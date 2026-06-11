@@ -14,7 +14,55 @@
     <div class="content">
       <div class="breadcrumb"><a href="../index.html">Home</a> › Workflow &amp; project structure</div>
       <h1>Workflow &amp; project structure</h1>
-      <p>Coming soon.</p>
+<p>For a display board, the productive loop is <strong>TouchGFX-first</strong>: design the UI, let it scaffold the project, then add peripherals in CubeMX and behaviour in CubeIDE. Here is the whole loop.</p>
+
+<h2>The optimal flow</h2>
+<ol>
+  <li><span class="tool tool-gfx">🎨 TouchGFX</span> Create a project from the <strong>STM32F746G-DISCO</strong> application template. It generates the <code>.ioc</code> and the CubeIDE project for you.</li>
+  <li><span class="tool tool-gfx">🎨 TouchGFX</span> Design screens, widgets, and interactions → <strong>Generate Code</strong>.</li>
+  <li><span class="tool tool-ide">⌨️ CubeIDE</span> Import the generated project, <strong>Build</strong> (hammer), <strong>Run</strong> (flash over ST-LINK).</li>
+  <li><span class="tool tool-mx">⚙️ CubeMX</span> Need a pin or peripheral (GPIO, UART, I²C…)? Open the <code>.ioc</code> in <strong>standalone CubeMX</strong>, enable it, <strong>Generate Code</strong>.</li>
+  <li><span class="tool tool-ide">⌨️ CubeIDE</span> Write your behaviour in <code>TouchGFX/gui/</code> (and in <code>Core</code> USER CODE regions for low-level glue). Build, flash, repeat.</li>
+</ol>
+<div class="warn"><b>After every Generate</b> CubeIDE does not auto-refresh. Select the project in the Project Explorer and press <strong>F5</strong> (Refresh) so new files appear. (True for both TouchGFX and CubeMX generation.)</div>
+
+<h2>What the project looks like</h2>
+<p>A TouchGFX-scaffolded project mixes files owned by three tools. Knowing who owns what tells you where your code goes and what gets overwritten.</p>
+<pre><code>demo3_hardware/
+├── demo3_hardware.ioc            ⚙️ CubeMX config — open in standalone CubeMX
+├── demo3_hardware.touchgfx       🎨 TouchGFX Designer project
+├── .project / .cproject          ⌨️ CubeIDE (Eclipse) project files
+├── Core/
+│   ├── Inc/                      ⚙️ generated headers (main.h, hal_conf…)
+│   └── Src/                      ⚙️ main.c, stm32f7xx_it.c, *_msp.c
+│                                    └ edit only inside /* USER CODE */ markers
+├── Drivers/                      ⚙️ CMSIS + STM32F7xx HAL (don't edit)
+├── Middlewares/ST/touchgfx/      🎨 TouchGFX framework library (don't edit)
+├── TouchGFX/
+│   ├── App/                      framework entry/glue
+│   ├── target/                   board glue: display + touch drivers
+│   ├── generated/                🎨 GENERATED — NEVER EDIT (rewritten every Generate)
+│   └── gui/                      ⌨️ YOUR backend C++ — edit here
+│       ├── include/gui/
+│       │   ├── model/            Model.hpp, ModelListener.hpp
+│       │   └── screen1_screen/   Screen1View.hpp, Screen1Presenter.hpp
+│       └── src/
+│           ├── model/            Model.cpp
+│           └── screen1_screen/   Screen1View.cpp, Screen1Presenter.cpp
+├── STM32F746NGHX_FLASH.ld        linker script
+└── Debug/                        build output</code></pre>
+
+<h2>Who owns what</h2>
+<table>
+  <thead><tr><th>Tool</th><th>Owns / writes</th><th>You edit</th><th>Overwritten on Generate</th></tr></thead>
+  <tbody>
+    <tr><td><span class="tool tool-gfx">🎨 TouchGFX</span></td><td><code>.touchgfx</code>, <code>TouchGFX/generated/**</code>; creates <code>gui/</code> stubs once</td><td><code>TouchGFX/gui/**</code> bodies</td><td><code>TouchGFX/generated/**</code> (every time)</td></tr>
+    <tr><td><span class="tool tool-mx">⚙️ CubeMX</span></td><td><code>.ioc</code>, <code>Core/**</code>, <code>Drivers/</code>, peripheral init</td><td><code>Core/Src/*.c</code> inside <code>/* USER CODE */</code> only</td><td>everything outside USER CODE markers in <code>Core/</code></td></tr>
+    <tr><td><span class="tool tool-ide">⌨️ CubeIDE (you)</span></td><td>build output</td><td><code>gui/**</code>, <code>Core</code> USER CODE regions</td><td>—</td></tr>
+  </tbody>
+</table>
+<div class="warn"><b>Two rules that save hours</b> Never edit <code>TouchGFX/generated/</code> or <code>Drivers/</code> — your changes vanish on the next Generate. And after any Generate, press <strong>F5</strong> in CubeIDE.</div>
+<div class="tip"><b>When do I go back to TouchGFX vs CubeMX vs CubeIDE?</b> Layout/widgets/animations → TouchGFX. A new pin, peripheral, or clock change → CubeMX (the <code>.ioc</code>). Logic, hardware reads/writes, talking between screen and hardware → C++ in <code>gui/</code> (CubeIDE). Demo 3 walks the full loop.</div>
     </div>
     <div class="page-nav" id="page-nav"></div>
   </main>
