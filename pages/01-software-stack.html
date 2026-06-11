@@ -52,20 +52,6 @@
       </ul>
       <p>Since <strong>CubeIDE 2.0</strong>, the CubeMX configuration engine is <strong>no longer bundled</strong>. CubeIDE is now purely the editor/compiler/debugger: you write and build your C/C++ backend here, flash it over ST-LINK, and step through it in the debugger. Pin and peripheral configuration happens in the separate CubeMX app, and <code>.ioc</code> files open there — not in CubeIDE.</p>
 
-      <h2>TouchGFX (v4.26.1)</h2>
-      <p>
-        TouchGFX is a drag-and-drop designer for building the <em>graphical user interface</em>
-        (GUI) — the screens and interactive widgets that appear on the board's 4.3-inch LCD.
-        You arrange buttons, images, labels, and animations visually inside the TouchGFX Designer
-        application; it then generates the C++ code that drives those visuals at runtime.
-      </p>
-      <p>
-        Under the hood TouchGFX talks directly to the display hardware: the
-        <strong>LTDC</strong> (LCD-TFT Display Controller) that pushes pixels to the screen, and
-        the <strong>Chrom-ART / DMA2D</strong> accelerator that blends and copies graphics in
-        hardware so the CPU stays free for your application logic.
-      </p>
-
       <h2>Supporting cast</h2>
       <dl>
         <dt><strong>HAL — Hardware Abstraction Layer</strong></dt>
