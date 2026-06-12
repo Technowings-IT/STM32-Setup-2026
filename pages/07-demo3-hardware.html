@@ -14,7 +14,122 @@
     <div class="content">
       <div class="breadcrumb"><a href="../index.html">Home</a> › D3 · Screen ↔ hardware</div>
       <h1>Demo 3 — Screen ↔ hardware</h1>
-      <p>Coming soon.</p>
+<p><strong>Goal:</strong> tap an on-screen button to toggle the on-board LED, show the physical user button's state on the screen, and log both over UART. This is the full round-trip — TouchGFX for the UI, CubeMX for the pins, CubeIDE for the behaviour — and the complete Model-View-Presenter pattern.</p>
+<h2>What you'll learn</h2>
+<ul>
+  <li>Going back to <span class="tool tool-mx">⚙️ CubeMX</span> to enable GPIO + UART on a TouchGFX project</li>
+  <li>Driving hardware from the UI, and pushing hardware state to the UI</li>
+  <li>The full <strong>Model · Presenter · View</strong> wiring, and where each file lives</li>
+  <li>Polling hardware in <code>Model::tick()</code> and retargeting <code>printf</code> to UART</li>
+</ul>
+<h2>Prerequisites</h2>
+<ul>
+  <li>Done Demo 2 (you can design, generate, build, flash a TouchGFX app).</li>
+  <li>You know your ST-LINK COM port number (from <a href="03-install-setup.html">Install &amp; verify</a>).</li>
+</ul>
+
+<h2>Steps</h2>
+<h3><span class="tool tool-gfx">🎨 TouchGFX</span> Step 1 — Design the screen</h3>
+<p>Open your project (or a fresh board-template one) in TouchGFX. Add a <b>Button</b> and a <b>TextArea</b> named <code>statusTxt</code> (enable its wildcard buffer, size ≥ 9 to hold <code>RELEASED</code>). Add an Interaction: trigger <em>Button is clicked</em> → action <em>Call new virtual function</em> named <code>ledButtonClicked</code>. <b>Generate Code</b>, then press <b>F5</b> in CubeIDE.</p>
+
+<h3><span class="tool tool-mx">⚙️ CubeMX</span> Step 2 — Enable the pins &amp; UART</h3>
+<p>Open the project's <code>.ioc</code> in <strong>standalone STM32CubeMX</strong>. Set:</p>
+<ul>
+  <li><code>PI1</code> → <code>GPIO_Output</code> (on-board LED <strong>LD1</strong>)</li>
+  <li><code>PI11</code> → <code>GPIO_Input</code> (user button <strong>B1</strong>; reads <strong>high when pressed</strong> — external pull-down)</li>
+  <li><code>USART1</code> → Mode <code>Asynchronous</code>; confirm pins <code>PA9</code> (TX) / <code>PB7</code> (RX) — these reach the ST-LINK virtual COM port — at <code>115200</code> baud, 8N1</li>
+</ul>
+<p>Click <b>Generate Code</b>, then back in CubeIDE press <b>F5</b>. This is the round-trip: a new capability on the screen needed new hardware, so you dropped into CubeMX.</p>
+
+<h3><span class="tool tool-ide">⌨️ CubeIDE</span> Step 3 — Retarget printf to UART</h3>
+<p>In <code>Core/Src/main.c</code>, add the include and the low-level putchar inside the USER CODE regions:</p>
+<pre><code>/* USER CODE BEGIN Includes */
+#include &lt;stdio.h&gt;
+/* USER CODE END Includes */</code></pre>
+<pre><code>/* USER CODE BEGIN 4 */
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&amp;huart1, (uint8_t *)&amp;ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
+/* USER CODE END 4 */</code></pre>
+
+<h3><span class="tool tool-ide">⌨️ CubeIDE</span> Step 4 — Model: read the button, drive the LED</h3>
+<p>In <code>TouchGFX/gui/include/gui/model/ModelListener.hpp</code> add a callback:</p>
+<pre><code>virtual void notifyButtonStateChanged(bool pressed) {}</code></pre>
+<p>In <code>TouchGFX/gui/include/gui/model/Model.hpp</code>, add to the class:</p>
+<pre><code>public:
+    void tick();
+    void toggleLed();
+private:
+    bool lastButtonState = false;</code></pre>
+<p>In <code>TouchGFX/gui/src/model/Model.cpp</code> (the constructor already exists — add the methods and the includes):</p>
+<pre><code>#include &lt;gui/model/Model.hpp&gt;
+#include &lt;gui/model/ModelListener.hpp&gt;
+#include "main.h"   // HAL + GPIOI / GPIO_PIN_1 / GPIO_PIN_11
+#include &lt;stdio.h&gt;
+
+void Model::tick()
+{
+    bool pressed = (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_11) == GPIO_PIN_SET); // B1 active-high
+    if (pressed != lastButtonState) {
+        lastButtonState = pressed;
+        if (modelListener) modelListener-&gt;notifyButtonStateChanged(pressed);
+    }
+}
+
+void Model::toggleLed()
+{
+    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_1); // LD1
+    printf("LED toggled\r\n");
+}</code></pre>
+<div class="note"><b>Why <code>Model::tick()</code></b> The framework calls it once per frame — the canonical place to poll hardware. It compares the button state and only notifies on a change.</div>
+
+<h3><span class="tool tool-ide">⌨️ CubeIDE</span> Step 5 — Presenter: relay both directions</h3>
+<p>In <code>Screen1Presenter.hpp</code> add:</p>
+<pre><code>virtual void notifyButtonStateChanged(bool pressed);
+void toggleLed();</code></pre>
+<p>In <code>Screen1Presenter.cpp</code> add:</p>
+<pre><code>void Screen1Presenter::notifyButtonStateChanged(bool pressed)
+{
+    view.setButtonState(pressed);
+}
+
+void Screen1Presenter::toggleLed()
+{
+    model-&gt;toggleLed();
+}</code></pre>
+
+<h3><span class="tool tool-ide">⌨️ CubeIDE</span> Step 6 — View: button → LED, state → text</h3>
+<p>In <code>Screen1View.hpp</code> add:</p>
+<pre><code>void setButtonState(bool pressed);
+virtual void ledButtonClicked();   // the interaction stub</code></pre>
+<p>In <code>Screen1View.cpp</code> add:</p>
+<pre><code>void Screen1View::ledButtonClicked()
+{
+    presenter-&gt;toggleLed();
+}
+
+void Screen1View::setButtonState(bool pressed)
+{
+    Unicode::snprintf(statusTxtBuffer, STATUSTXT_SIZE, pressed ? "PRESSED" : "RELEASED");
+    statusTxt.invalidate();
+}</code></pre>
+
+<h3><span class="tool tool-ide">⌨️ CubeIDE</span> Step 7 — Build &amp; flash</h3>
+<p>Build (hammer), then Run (flash). Open a serial terminal (Tera Term / PuTTY) on your ST-LINK COM port at <code>115200</code> 8N1.</p>
+<div class="checkpoint"><b>✅ Checkpoint</b> Tap the on-screen button → LED LD1 toggles and <code>LED toggled</code> prints in the terminal. Press the physical B1 button → the screen shows <code>PRESSED</code> / <code>RELEASED</code>.</div>
+
+<h2>What just happened</h2>
+<figure>
+  <img src="../assets/img/touchgfx-mvp.svg" alt="Model-View-Presenter data flow">
+  <figcaption>TouchGFX Model-View-Presenter — and where hardware plugs in.</figcaption>
+</figure>
+<ul>
+  <li><strong>UI → hardware:</strong> View <code>ledButtonClicked()</code> → Presenter <code>toggleLed()</code> → Model <code>toggleLed()</code> → <code>HAL_GPIO_TogglePin</code>.</li>
+  <li><strong>Hardware → UI:</strong> <code>Model::tick()</code> reads B1 → <code>ModelListener</code> → Presenter <code>notifyButtonStateChanged()</code> → View <code>setButtonState()</code> → <code>invalidate()</code>.</li>
+  <li><strong>The round-trip:</strong> each new pin meant a trip to CubeMX, a Generate, an F5, then code in <code>gui/</code>. That is the loop you'll repeat for every feature.</li>
+</ul>
     </div>
     <div class="page-nav" id="page-nav"></div>
   </main>
