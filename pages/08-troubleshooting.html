@@ -39,6 +39,14 @@
             <td>Open STM32CubeProgrammer and run a full chip erase. Check that the BOOT0 pin/jumper is in the normal run position (not bootloader mode). If problems persist, try lowering the SWD clock speed in your IDE's debug settings.</td>
           </tr>
           <tr>
+            <td>Can't find pin/peripheral config in CubeIDE; double-clicking <code>.ioc</code> does nothing</td>
+            <td>Since CubeIDE 2.0, CubeMX is separate and <code>.ioc</code> files open in <strong>standalone STM32CubeMX</strong>, not in CubeIDE. Open CubeMX and load the <code>.ioc</code> there.</td>
+          </tr>
+          <tr>
+            <td>Changes made in CubeMX/TouchGFX don't appear in CubeIDE</td>
+            <td>CubeIDE doesn't auto-refresh after Generate. Select the project in the Project Explorer and press <strong>F5</strong> (Refresh).</td>
+          </tr>
+          <tr>
             <td>TouchGFX files were not generated</td>
             <td>You must click <strong>Generate</strong> inside the TouchGFX module or TouchGFX Designer — it does not happen automatically. Also make sure that in STM32CubeMX the <em>Toolchain / IDE</em> is set to <strong>STM32CubeIDE</strong> before you click Generate Code.</td>
           </tr>
@@ -52,7 +60,7 @@
           </tr>
           <tr>
             <td>Code you wrote has disappeared after regenerating from CubeMX</td>
-            <td>CubeMX overwrites anything outside the protected regions. Always place your custom code <em>inside</em> the <code>/* USER CODE BEGIN … */</code> and <code>/* USER CODE END … */</code> markers — CubeMX preserves everything between them.</td>
+            <td>CubeMX overwrites anything outside the protected regions. Always place your custom code <em>inside</em> the <code>/* USER CODE BEGIN … */</code> and <code>/* USER CODE END … */</code> markers — CubeMX preserves everything between them. and never edit <code>TouchGFX/generated/</code>.</td>
           </tr>
         </tbody>
       </table>
@@ -125,6 +133,30 @@
           <tr>
             <td>VCP</td>
             <td><strong>Virtual COM Port.</strong> The ST-LINK also exposes a serial (UART) connection to your PC as a fake COM port — no extra USB-to-serial adapter needed. You can use it with any terminal program (PuTTY, Tera Term, etc.) to receive debug output from your firmware.</td>
+          </tr>
+          <tr>
+            <td>TouchGFX</td>
+            <td>ST's drag-and-drop GUI designer and C++ graphics framework. For a supported board it also scaffolds the whole project (the <code>.ioc</code> + CubeIDE project).</td>
+          </tr>
+          <tr>
+            <td>View / Presenter / Model</td>
+            <td>The three MVP roles. <em>View</em> owns the widgets and draws; <em>Presenter</em> is the glue (one per screen, no widgets); <em>Model</em> holds data and talks to the rest of the firmware (HAL, RTOS).</td>
+          </tr>
+          <tr>
+            <td>generated vs gui</td>
+            <td><code>TouchGFX/generated/</code> is rewritten on every Generate — never edit it. <code>TouchGFX/gui/</code> holds your editable View/Presenter/Model code.</td>
+          </tr>
+          <tr>
+            <td>Wildcard / buffer</td>
+            <td>A TextArea placeholder for changing text. TouchGFX makes a char buffer (e.g. <code>valueTxtBuffer</code> + <code>VALUETXT_SIZE</code>) you fill with <code>Unicode::snprintf</code>.</td>
+          </tr>
+          <tr>
+            <td>invalidate()</td>
+            <td>Marks a widget's pixels stale so TouchGFX repaints it on the next frame (it doesn't draw immediately).</td>
+          </tr>
+          <tr>
+            <td>tickEvent / Model::tick</td>
+            <td>Code run once per display frame. <code>Model::tick()</code> is the standard place to poll hardware and push changes toward the View.</td>
           </tr>
         </tbody>
       </table>
