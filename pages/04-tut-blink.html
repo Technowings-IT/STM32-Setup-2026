@@ -44,13 +44,14 @@
       <div class="note"><b>Note</b> Choosing Yes also works; CubeMX then defines handy pin macros like <code>LD1_Pin</code> for you automatically.</div>
 
       <h3>Step 3 — Configure the LED pin</h3>
-      <p>The <code>.ioc</code> file opens automatically in the Pinout &amp; Configuration view. Find pin <code>PI1</code> on the chip diagram (you can use the search box at the top of the pinout view). Click <code>PI1</code> and choose <code>GPIO_Output</code> from the pop-up menu.</p>
+      <p>Find pin <code>PI1</code> on the chip diagram (you can use the search box at the top of the pinout view). Click <code>PI1</code> and choose <code>GPIO_Output</code> from the pop-up menu.</p>
       <p>PI1 is the microcontroller pin wired to the green user LED labelled LD1 on the board's silkscreen.</p>
 
       <h3>Step 4 — Generate code</h3>
-      <p>Save the <code>.ioc</code> file with <code>Ctrl+S</code>. A dialog will ask "Do you want to generate Code?". Click <strong>Yes</strong>. CubeIDE runs CubeMX in the background and writes the project skeleton, including <code>Core/Src/main.c</code>.</p>
-
-      <h3>Step 5 — Add the blink code</h3>
+      <p>Save the <code>.ioc</code> file with <code>Ctrl+S</code> and name the project.Click <code>GENERATE CODE</code> in the top-right corner.  A dialog will ask "Do you want to generate Code?". Click <strong>Yes</strong>.
+      <h3>Step 5 —  Open in CubeIDE</h3>
+      <p> In STM32CubeIDE, go to <code>File → STM32 Project Create/Import → Import STM32 Project → STM32CubeMX/STM32CubeIDE Project</code> Select your project folder from the directory and click Finish. Your project is now added to the Project Explorer.</p>
+      <h3>Step 6 — Add the blink code</h3>
       <p>Open <code>Core/Src/main.c</code> in the Project Explorer. Scroll down to the <code>while(1)</code> main loop and add the two lines shown below. The finished block should look exactly like this:</p>
 
 <pre><code>/* USER CODE BEGIN WHILE */
