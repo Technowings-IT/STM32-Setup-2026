@@ -5,14 +5,14 @@ An offline, beginner-friendly guide to STM32 development on the **STM32F746G-DIS
 ### 📖 Live guide → https://technowings-it.github.io/STM32-Setup-2026/
 
 ## What's inside
-- **Software stack** — what CubeMX, CubeIDE, TouchGFX and HAL each do, and how they fit together
-- **Board overview** — STM32F746G-DISCO tour with hand-drawn diagrams (board map, memory map)
-- **Install & setup** — tools, drivers, and verifying the board on Windows
-- **4 hands-on tutorials** — Blink LED · Button + UART · TouchGFX Hello World · TouchGFX interactive UI
-- **Troubleshooting + glossary** — fixes for common errors and a beginner term list
+- **Introduction** — Software stack (TouchGFX / CubeMX / CubeIDE and how they hand off) · Board overview (STM32F746G-DISCO tour with hand-drawn diagrams)
+- **Setup** — Install & verify: all three tools, drivers, and confirming the board on Windows
+- **Workflow** — TouchGFX-first flow & structure: the optimal loop, generated folder tree, and who owns which files
+- **3 hands-on demos (TouchGFX-first)** — D1 First screen (TouchGFX only) · D2 Interactive UI (widget + backend) · D3 Screen↔hardware (full round-trip: LED, button, UART)
+- **Reference** — Troubleshooting & glossary: fixes for common errors and a beginner term list
 
 ## View locally
 Just open `index.html` in any browser. Fully offline — no build step, no server, no internet needed.
 
 ## Tech
-Static HTML / CSS / JS with hand-authored SVG diagrams. Zero dependencies. GitHub Primer-style dark/light theme with a toggle. Deployed via GitHub Pages.
+Static HTML / CSS / JS with hand-authored SVG diagrams. Zero dependencies. Claude-style theme (warm dark default + cream light), serif headings, with a toggle. Deployed via GitHub Pages.
